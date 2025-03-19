@@ -1,16 +1,87 @@
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
+import React, { useEffect, useState } from 'react'
 
 export const Home = () => {
 
-  const {store, dispatch} =useGlobalReducer()
+	const { store, dispatch } = useGlobalReducer()
+	const [contacts, setContacts] = useState([])
+
+	const createAgenda = () => {
+		const option = {
+			method: "POST",
+			headers: {
+				"content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				"slug": "israel-diaz",
+				"id": 0
+
+			})
+		}
+		fetch("https://playground.4geeks.com/contact/agendas/israel-diaz", option)
+			.then((resp) => {
+				if (resp.ok == false) {
+					console.log("failed to create agenda");
+				}
+				else {
+					getContactsfromAgenda()
+				}
+				return resp.json()
+			})
+			.then((data) => console.log("Agenda Created(Data):", data))
+	}
+
+
+	const getContactsfromAgenda = () => {            //Gets the contacts from a specific agenda from the database.//
+		fetch("https://playground.4geeks.com/contact/agendas/israel-diaz/contacts")
+			.then((resp) => {
+				console.log("Contacts from agenda(resp):", resp)
+				if (resp.ok == false) {         //if it doesn't exist, it creates a new agenda with the function named there//
+					return createAgenda();
+				}
+				else {
+					return resp.json()
+				}
+
+			})
+			.then((data) => {
+				const arrayOfContacts = data.contacts
+				console.log("Array of Contacts from agenda(data):", arrayOfContacts);
+				setContacts(arrayOfContacts);
+			})
+	}
+
+
+	const getAllagendas = () => {//Gets all the agendas from the database.//
+		fetch("https://playground.4geeks.com/contact/agendas")
+			.then((resp) => {
+				console.log("All Agendas(RESP):", resp)
+				return resp.json()
+			})
+			.then((data) => {
+				console.log("All Agendas(DATA):", data)
+				return data
+			});
+	}
+
+
+	useEffect(() => {
+		getContactsfromAgenda();
+		getAllagendas();
+	}, [])
+
+
 
 	return (
 		<div className="text-center mt-5">
-			<h1>Hello Rigo!!</h1>
-			<p>
-				<img src={rigoImageUrl} />
-			</p>
+			{contacts && contacts.length > 0 ? contacts.map((item,index) => {
+				return (
+					<div className="contacst-array">
+						Contacts here!
+					</div>
+				)
+			}) : "No contacts found"}
 		</div>
 	);
 }; 

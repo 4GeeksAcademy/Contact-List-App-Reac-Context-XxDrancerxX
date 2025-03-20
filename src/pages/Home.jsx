@@ -1,12 +1,14 @@
 import rigoImageUrl from "../assets/img/rigo-baby.jpg";
 import useGlobalReducer from "../hooks/useGlobalReducer.jsx";
 import React, { useEffect, useState } from 'react'
+import { Link } from "react-router-dom";
+
 
 export const Home = () => {
 
 	const { store, dispatch } = useGlobalReducer()
-	const [contacts, setContacts] = useState([])
-
+	const [contacts, setContacts] = useState([])  //We changed the state to a global state to re-use it in other components//
+                                                   //Using the useGlobalReducer hook above//
 	const createAgenda = () => {
 		const option = {
 			method: "POST",
@@ -46,14 +48,17 @@ export const Home = () => {
 
 			})
 			.then((data) => {
-				const arrayOfContacts = data.contacts
-				console.log("Array of Contacts from agenda(data):", arrayOfContacts);
-				setContacts(arrayOfContacts);
+				// const arrayOfContacts = data.contacts
+				// console.log("Array of Contacts from agenda(data):", arrayOfContacts); //This is the array of contacts from the agenda 
+				// setContacts(arrayOfContacts);
+				dispatch({ type: "set_contact_list", payload: data.contacts })  //Another way to set the contacts in the global state to re-use it//
+				console.log("Contacts from agenda", data)
+				
 			})
 	}
 
 
-	const getAllagendas = () => {//Gets all the agendas from the database.//
+	const getAllagendas = () => {   //Gets all the agendas from the database.//
 		fetch("https://playground.4geeks.com/contact/agendas")
 			.then((resp) => {
 				console.log("All Agendas(RESP):", resp)
@@ -72,14 +77,30 @@ export const Home = () => {
 	}, [])
 
 
-
+   console.log("store.contacts", store.contacts);
+   console.log("store", store);
+   
 	return (
-		<div className="text-center mt-5">
-			{contacts && contacts.length > 0 ? contacts.map((item,index) => {
+		<div className="text-center p-3 mt-5">
+			{ store.contacts.length > 0 ? store.contacts.map((item, index) => {
 				return (
-					<div className="contacst-array">
-						Contacts here!
+
+					<div className="row-auto bg-primary text-white p-3 m-3" key={index}>
+						
+						<p>{item.name}</p>
+						<p>{item.phone}</p>
+						<p>{item.email}</p>
+						<p>{item.address}</p>
+						<Link to="/submit" >
+							<button
+							onClick={() => {
+								dispatch({ type: "set_single_contact", payload: item })
+							}}							
+							className="btn btn-danger">Edit</button>
+						</Link>
 					</div>
+
+
 				)
 			}) : "No contacts found"}
 		</div>

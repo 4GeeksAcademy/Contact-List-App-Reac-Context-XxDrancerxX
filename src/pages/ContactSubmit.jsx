@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import useGlobalReducer from '../hooks/useGlobalReducer';
+import { useNavigate } from 'react-router-dom';
 
 export const ContactSubmit = () => {
     const { store, dispatch } = useGlobalReducer();
-    console.log(store.singleContact, "store.singleContact")
+    
 
 
-    const [name, setName] = useState(store.singleContact.name);
-    const [phone, setPhone] = useState(store.singleContact.phone);
-    const [email, setEmail] = useState(store.singleContact.email);
-    const [address, setAddress] = useState(store.singleContact.address);
+    const [name, setName] = useState(store.singleContact?.name || "");
+    const [phone, setPhone] = useState(store.singleContact?.phone || "");
+    const [email, setEmail] = useState(store.singleContact?.email || "");
+    const [address, setAddress] = useState(store.singleContact?.address || "");
 
 
     const submitContact = () => {
@@ -45,7 +46,7 @@ export const ContactSubmit = () => {
         }
         fetch("https://playground.4geeks.com/contact/agendas/israel-diaz/contacts/"+id, option)
             .then((resp) => resp.json())
-            .then((data) => console.log("contact created", data))
+            .then((data) => data)
     }
     return (
         <div>

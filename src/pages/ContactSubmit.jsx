@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import useGlobalReducer from '../hooks/useGlobalReducer';
 import { useNavigate } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 export const ContactSubmit = () => {
     const { store, dispatch } = useGlobalReducer();
-    
+
 
 
     const [name, setName] = useState(store.singleContact?.name || "");
@@ -17,7 +18,7 @@ export const ContactSubmit = () => {
         const option = {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"             
+                "Content-Type": "application/json"
             },
             body: JSON.stringify({
                 "name": name,
@@ -30,7 +31,7 @@ export const ContactSubmit = () => {
             .then((resp) => resp.json())
             .then((data) => console.log("contact created", data))
     }
-    
+
     const updateContact = (id) => {
         const option = {
             method: "PUT",
@@ -44,18 +45,52 @@ export const ContactSubmit = () => {
                 "address": address
             })
         }
-        fetch("https://playground.4geeks.com/contact/agendas/israel-diaz/contacts/"+id, option)
+        fetch("https://playground.4geeks.com/contact/agendas/israel-diaz/contacts/" + id, option)
             .then((resp) => resp.json())
             .then((data) => data)
     }
     return (
-        <div>
-            <input onChange={(e) => setName(e.target.value)} value={name} type="text" placeholder="name" />
-            <input onChange={(e) => setPhone(e.target.value)} value={phone} type="text" placeholder="phone" />
-            <input onChange={(e) => setEmail(e.target.value)} value={email} type="text" placeholder="email" />
-            <input onChange={(e) => setAddress(e.target.value)} value={address} type="text" placeholder="address" />
-            <button onClick={submitContact}>Submit</button>
-            <button onClick={() => updateContact(store.singleContact.id)}>Update</button>
+        //  className="container  d-flex justify-content-center flex-column"
+        <div style={{ paddingLeft: "100px", paddingRight: "100px" }} className="py-5 mx-5 d-flex flex-column min-vh-100">
+            
+            <div className="mb-3">
+                <label for="formGroupExampleInput" className="form-label">Name:</label>
+                <input className="form-control" id="formGroupExampleInput" onChange={(e) => setName(e.target.value)} value={name} type="text" placeholder="Name" />
+            </div>
+            <div className="mb-3">
+                <label for="formGroupExampleInput2" className="form-label">Phone:</label>
+                <input className="form-control" id="formGroupExampleInput1" onChange={(e) => setPhone(e.target.value)} value={phone} type="text" placeholder="Phone" />
+            </div>
+            <div className="mb-3">
+                <label for="formGroupExampleInput" className="form-label">Email:</label>
+                <input className="form-control" id="formGroupExampleInput2" onChange={(e) => setEmail(e.target.value)} value={email} type="text" placeholder="Email" />
+            </div>
+            <div className="mb-3">
+                <label for="formGroupExampleInput2" className="form-label">Address:</label>
+                <input className="form-control" id="formGroupExampleInput3" onChange={(e) => setAddress(e.target.value)} value={address} type="text" placeholder="Address" />
+            </div>
+            <div className="d-flex py-2 ">
+                <button onClick={()=>{
+                    if(submitContact){
+                        return 
+                    }
+                }} type="button" className="btn btn-primary">Save</button>
+                <button onClick={() => {
+                    if (store.singleContact?.id) {
+                        updateContact(store.singleContact.id);
+                    }
+                    else {
+                        console.log("No contact ID found. Cannot update.");
+                        alert("Please select a contact to update.");
+                    }
+                }} type="button" className="btn btn-secondary">
+                    Update
+                </button>
+            </div>
+            <Link to="/">
+                <button className="btn btn-link p-0">Get back to Contacts</button>
+            </Link>
         </div>
     )
 };
+

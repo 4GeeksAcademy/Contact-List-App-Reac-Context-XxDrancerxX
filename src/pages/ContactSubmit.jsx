@@ -27,9 +27,18 @@ export const ContactSubmit = () => {
             })
         };
         fetch("https://playground.4geeks.com/contact/agendas/israel-diaz/contacts", option)
-            .then((resp) => resp.json())
+            .then((resp) => {
+                console.log("Status:", resp.status, "OK:", resp.ok);
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    return resp.text().then(text => {
+                        throw new Error(`Failed to create contact: Status ${resp.status}, Response: ${text}`);
+                    });
+                }
+            })
             .then((data) => {
-                console.log("contact created", data);                
+                dispatch({ type: "submit_single_contact", payload: data });
                 setName("");
                 setPhone("");
                 setEmail("");
@@ -37,6 +46,7 @@ export const ContactSubmit = () => {
             })
             .catch((error) => {
                 console.error("Error creating contact:", error);
+                alert("Error: " + error.message);
             });
     };
 
@@ -52,11 +62,28 @@ export const ContactSubmit = () => {
                 "email": email,
                 "address": address
             })
-        }
+        };
         fetch("https://playground.4geeks.com/contact/agendas/israel-diaz/contacts/" + id, option)
-            .then((resp) => resp.json())
-            .then((data) => data)
-    }
+            .then((resp) => {
+                console.log("Status:", resp.status, "OK:", resp.ok);
+                if (resp.ok) {
+                    return resp.json();
+                } else {
+                    return resp.text().then(text => {
+                        throw new Error(`Failed to update contact: Status ${resp.status}, Response: ${text}`);
+                    });
+                }
+            })
+            .then((data) => {
+                dispatch({ type: "update_single_contact", payload: data });
+            })
+            .catch((error) => {
+                console.error("Error updating contact:", error);
+                alert("Error: " + error.message);
+            });
+    };
+
+
     return (
         //  className="container  d-flex justify-content-center flex-column"
         <div style={{ paddingLeft: "100px", paddingRight: "100px" }} className="py-5 mx-5 d-flex flex-column min-vh-100">
@@ -85,7 +112,8 @@ export const ContactSubmit = () => {
                     type="button"
                     className="btn btn-primary"
                 >
-                    Save
+                    SubmitContact
+
                 </button>
                 <button onClick={() => {
                     if (store.singleContact?.id) {

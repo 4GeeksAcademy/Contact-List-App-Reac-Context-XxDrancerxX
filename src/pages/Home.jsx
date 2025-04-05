@@ -79,6 +79,7 @@ export const Home = () => {
 		};
 		fetch(`https://playground.4geeks.com/contact/agendas/israel-diaz/contacts/${id}`, option)
 			.then((resp) => {
+				console.log("Delete Response - Status:", resp.status, "OK:", resp.ok);
 				if (!resp.ok) {
 					throw new Error(`HTTP error! status: ${resp.status}, statusText: ${resp.statusText}`);
 				}

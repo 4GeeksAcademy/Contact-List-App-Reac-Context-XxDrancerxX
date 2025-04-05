@@ -19,6 +19,20 @@ export default function storeReducer(store, action = {}) {
       singleContact: action.payload
     };
   }
+  if (action.type === "submit_single_contact") {
+    return {
+      ...store,
+      singleContact: action.payload
+    };
+  }
+
+  if (action.type === "update_single_contact") {
+    return {
+      ...store,
+      singleContact: action.payload
+    };
+  }
+
 
   switch (action.type) {
     case 'add_task':

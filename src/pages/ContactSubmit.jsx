@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export const ContactSubmit = () => {
     const { store, dispatch } = useGlobalReducer();
-
+    const navigate = useNavigate();
 
 
     const [name, setName] = useState(store.singleContact?.name || "");
@@ -43,6 +43,7 @@ export const ContactSubmit = () => {
                 setPhone("");
                 setEmail("");
                 setAddress("");
+                navigate("/");
             })
             .catch((error) => {
                 console.error("Error creating contact:", error);
@@ -76,6 +77,7 @@ export const ContactSubmit = () => {
             })
             .then((data) => {
                 dispatch({ type: "update_single_contact", payload: data });
+                navigate("/");
             })
             .catch((error) => {
                 console.error("Error updating contact:", error);
